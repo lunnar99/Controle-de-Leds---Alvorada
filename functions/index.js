@@ -14,6 +14,7 @@ const STORES = [
     { id: "copacabana", name: "COPACABANA" },
     { id: "botafogo", name: "BOTAFOGO" }
 ];
+ 
 
 const DEST_EMAILS = ["joaopedrosocialm@gmail.com", "joao.oliveira@grpalvorada.com.br"];
 const RESUMO_URL = "https://alvoleds.netlify.app/resumo.html";
