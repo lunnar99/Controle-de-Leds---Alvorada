@@ -31,11 +31,16 @@
   padding:0;
 }
 
+html, body{
+  height:100vh;
+  overflow:hidden;
+}
 body{
   margin:0;
   background:var(--bg);
   color:var(--primary);
-  min-height:100vh;
+  display:flex;
+  flex-direction:column;
 }
 
 /* HEADER */
@@ -137,7 +142,9 @@ header{
 /* LAYOUT */
 .container{
   display:flex;
-  min-height:calc(100vh - 80px);
+  flex:1;
+  overflow:hidden;
+  min-height:0;
 }
 
 /* SIDEBAR */
@@ -146,6 +153,10 @@ aside{
   background:var(--bg-sidebar);
   padding:30px 0;
   border-right:1px solid #1e2530;
+  overflow-y:auto;
+  flex-shrink:0;
+  display:flex;
+  flex-direction:column;
 }
 
 .nav-item{
@@ -176,9 +187,15 @@ aside{
   font-size:14px;
 }
 
+.sidebar-actions{
+  padding:0 16px 4px;
+  display:flex;
+  flex-direction:column;
+  gap:8px;
+  margin-top:auto;
+}
 .btn-testar-email{
   display:block;
-  margin:auto 16px 0;
   padding:10px 16px;
   background:transparent;
   border:1px solid #2a3040;
@@ -189,7 +206,7 @@ aside{
   cursor:pointer;
   transition:all .2s;
   text-align:center;
-  width:calc(100% - 32px);
+  width:100%;
 }
 .btn-testar-email:hover{
   border-color:#3b82f6;
@@ -199,6 +216,25 @@ aside{
 .btn-testar-email:disabled{
   opacity:0.5;
   cursor:not-allowed;
+}
+.btn-criar-resumo{
+  display:block;
+  padding:10px 16px;
+  background:rgba(34,197,94,0.07);
+  border:1px solid rgba(34,197,94,0.3);
+  border-radius:8px;
+  color:#86efac;
+  font-size:12px;
+  font-weight:600;
+  cursor:pointer;
+  transition:all .2s;
+  text-align:center;
+  width:100%;
+}
+.btn-criar-resumo:hover{
+  border-color:var(--green);
+  color:#fff;
+  background:rgba(34,197,94,0.15);
 }
 
 /* Search Box */
@@ -240,8 +276,10 @@ aside{
 /* MAIN */
 main{
   flex:1;
-  padding:40px;
+  padding:30px 40px;
   background:var(--bg);
+  overflow-y:auto;
+  min-height:0;
 }
 
 .main-header{
@@ -252,17 +290,17 @@ main{
 }
 
 .main-header h1{
-  font-size:42px;
+  font-size:32px;
   font-weight:900;
   margin:0;
   line-height:1;
 }
 
 .main-header h2{
-  font-size:28px;
+  font-size:20px;
   font-weight:400;
   color:var(--muted);
-  margin:8px 0 0 0;
+  margin:6px 0 0 0;
 }
 
 .add-btn{
@@ -1006,10 +1044,11 @@ td{
     <a class="nav-item active" data-section="marcas">Marcas</a>
     <a class="nav-item sub" data-section="saidas">Saídas</a>
     <a class="nav-item" data-section="midias">Mídias</a>
-    <div style="flex:1;"></div>
-    <button class="btn-testar-email" id="btnCriarResumo" title="Gera um resumo visual com vencidos e próximos a vencer">📋 Criar Resumo</button>
-    <button class="btn-testar-email" id="btnTestarEmail" title="Envia um email de teste agora">📧 Testar Email</button>
-    <div style="height:20px;"></div>
+    <div class="sidebar-actions">
+      <button class="btn-criar-resumo" id="btnCriarResumo" title="Gera um resumo visual com vencidos e próximos a vencer">📋 Criar Resumo</button>
+      <button class="btn-testar-email" id="btnTestarEmail" title="Envia um email de teste agora">📧 Testar Email</button>
+    </div>
+    <div style="height:16px;"></div>
   </aside>
 
   <!-- MAIN -->
