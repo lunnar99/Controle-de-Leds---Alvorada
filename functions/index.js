@@ -16,7 +16,6 @@ const STORES = [
 ];
 
 const DEST_EMAILS = ["joaopedrosocialm@gmail.com", "joao.oliveira@grpalvorada.com.br"];
-const NOTIFY_EMAIL = "joaopedrosocialm@gmail.com";
 const RESUMO_URL = "https://alvoleds-aab35.web.app/resumo.html";
 
 function diferencaEmDias(dataAlvo, dataBase) {
@@ -168,7 +167,7 @@ function gerarResumoVisualSvg(resumo, dataReferencia) {
     return partes.join("");
 }
 
-function buildGroupedBlocksPorMarca(items, hoje) {
+function buildEmailBlocks(items, hoje, incluirLink = false) {
     if (!items.length) return "";
 
     const blocos = items
@@ -182,22 +181,26 @@ function buildGroupedBlocksPorMarca(items, hoje) {
             const diasRestantes = calcularDiasRestantes(item.saida, hoje);
             const diasText = formatarDiasRestantes(diasRestantes);
             const lojas = item.lojas.sort((a, b) => a.localeCompare(b));
-            const titulo = `${item.nome} - ${item.saida} - (${diasText})`;
-            
+
+            const linkHtml = incluirLink
+                ? `<div style="margin-top:8px;"><a href="${RESUMO_URL}" style="color:#f97316;font-size:13px;font-weight:600;text-decoration:underline;">Acesse e confirme a retirada.</a></div>`
+                : "";
+
             return `
-                <div style="background:#111;border:1px solid #2a2a2a;border-radius:10px;padding:14px 16px;margin-bottom:12px;">
-                    <div style="font-size:14px;font-weight:700;color:#f5f5f5;line-height:1.4;">
-                        ${escapeHtml(titulo)}
+                <div style="margin-bottom:20px;padding-bottom:16px;border-bottom:1px solid #1e2530;">
+                    <div style="font-size:15px;font-weight:800;color:#f5f5f5;text-transform:uppercase;letter-spacing:0.3px;">
+                        ${escapeHtml(item.nome)} &mdash; ${escapeHtml(diasText.toUpperCase())}.
                     </div>
-                    <div style="color:#b0b0b0;font-size:12px;border-top:1px solid #1a1a1a;padding-top:8px;margin-top:8px;">
-                        ${escapeHtml(lojas.join(", "))}
+                    <div style="color:#9aa4b2;font-size:13px;margin-top:5px;">
+                        ${escapeHtml(lojas.join(", "))}.
                     </div>
+                    ${linkHtml}
                 </div>
             `;
         })
         .join("");
 
-    return `<div style="margin-bottom:24px;">${blocos}</div>`;
+    return `<div style="margin-bottom:8px;">${blocos}</div>`;
 }
 
 async function verificarEEnviarEmail(isTeste = false) {
@@ -319,30 +322,24 @@ async function verificarEEnviarEmail(isTeste = false) {
     if (itensVencidosParaEnviar.length) {
         const agrupados = agruparItensPorMarcaData(itensVencidosParaEnviar);
         sections.push(
-            `<h3 style="color:#ef4444;margin:0 0 10px;">&#9888; Marcas Vencidas (${agrupados.length})</h3>` +
-            buildGroupedBlocksPorMarca(agrupados, hoje) +
-            `<div style="text-align:center;margin:16px 0 28px;">` +
-            `<a href="${RESUMO_URL}" style="display:inline-block;background:#dc2626;color:#fff;text-decoration:none;font-size:14px;font-weight:700;padding:13px 32px;border-radius:8px;">` +
-            `&#9888; Acessar Resumo e Decidir</a></div>`
+            `<h3 style="color:#ef4444;margin:0 0 14px;font-size:13px;text-transform:uppercase;letter-spacing:1px;">&#9888; Marcas Vencidas (${agrupados.length})</h3>` +
+            buildEmailBlocks(agrupados, hoje, true)
         );
     }
 
     if (itensHojeParaEnviar.length) {
         const agrupados = agruparItensPorMarcaData(itensHojeParaEnviar);
         sections.push(
-            `<h3 style="color:#f59e0b;margin:0 0 10px;">Marcas que vencem HOJE (${agrupados.length})</h3>` +
-            buildGroupedBlocksPorMarca(agrupados, hoje) +
-            `<div style="text-align:center;margin:16px 0 28px;">` +
-            `<a href="${RESUMO_URL}" style="display:inline-block;background:#d97706;color:#fff;text-decoration:none;font-size:14px;font-weight:700;padding:13px 32px;border-radius:8px;">` +
-            `&#128197; Acessar Resumo e Decidir</a></div>`
+            `<h3 style="color:#f59e0b;margin:0 0 14px;font-size:13px;text-transform:uppercase;letter-spacing:1px;">&#128197; Vencem Hoje (${agrupados.length})</h3>` +
+            buildEmailBlocks(agrupados, hoje, true)
         );
     }
 
     if (itensEm3DiasParaEnviar.length) {
         const agrupados = agruparItensPorMarcaData(itensEm3DiasParaEnviar);
         sections.push(
-            `<h3 style="color:#f97316;margin:0 0 10px;">Marcas que vencem em 3 dias (${agrupados.length})</h3>` +
-            buildGroupedBlocksPorMarca(agrupados, hoje)
+            `<h3 style="color:#f97316;margin:0 0 14px;font-size:13px;text-transform:uppercase;letter-spacing:1px;">Vencem em breve (${agrupados.length})</h3>` +
+            buildEmailBlocks(agrupados, hoje, false)
         );
     }
 
@@ -524,7 +521,7 @@ exports.notificarDecisaoMarca = onDocumentCreated("decisoes_marcas/{docId}", asy
     try {
         await transporter.sendMail({
             from: `"Alvo Leds Painel" <${gmailUser}>`,
-            to: NOTIFY_EMAIL,
+            to: DEST_EMAILS.join(","),
             subject: assunto,
             html: htmlBody
         });
