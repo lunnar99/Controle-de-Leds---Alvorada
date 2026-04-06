@@ -16,7 +16,7 @@ const STORES = [
 ];
 
 const DEST_EMAILS = ["joaopedrosocialm@gmail.com", "joao.oliveira@grpalvorada.com.br"];
-const RESUMO_URL = "https://alvoleds-aab35.web.app/resumo.html";
+const RESUMO_URL = "https://alvoleds.netlify.app/resumo.html";
 
 function diferencaEmDias(dataAlvo, dataBase) {
     const umDiaMs = 24 * 60 * 60 * 1000;
