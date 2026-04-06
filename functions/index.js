@@ -256,7 +256,7 @@ async function verificarEEnviarEmail(isTeste = false) {
                     criadoEm: admin.firestore.FieldValue.serverTimestamp()
                 }
             });
-            
+             
 
             if (diasParaVencer < 0) {
                 vencidos.push(item);
