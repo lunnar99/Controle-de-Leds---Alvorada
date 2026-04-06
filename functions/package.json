@@ -1,0 +1,17 @@
+{
+  "name": "alvo-leds-functions",
+  "version": "1.0.0",
+  "description": "Firebase Cloud Functions - Notificações de vencimento de marcas",
+  "main": "index.js",
+  "engines": {
+    "node": "22"
+  },
+  "scripts": {
+    "deploy": "firebase deploy --only functions"
+  },
+  "dependencies": {
+    "firebase-admin": "^12.0.0",
+    "firebase-functions": "^7.0.6",
+    "nodemailer": "^6.9.13"
+  }
+}
